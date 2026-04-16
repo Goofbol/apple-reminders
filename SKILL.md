@@ -1,6 +1,6 @@
 ---
 name: apple-reminders
-description: Efficient Apple Reminders management via osascript — hard rules, fast patterns, validation, date safety. Drop into any Claude Code / Codex CLI / pure-shell workflow on macOS.
+description: Use when creating, reading, updating, completing, or validating Apple Reminders on macOS via osascript — including AppleScript date-parsing bugs (locale-dependent MM/DD flips), batch-read performance issues, due-date hygiene (overdue, missing, far-future), duplicate detection, or automating reminder workflows from Claude Code, Codex CLI, cron, or bare shell.
 ---
 
 # Apple Reminders — osascript Skill
@@ -12,6 +12,30 @@ Manages Apple Reminders via `osascript` with a focus on:
 - **Portability** — pure shell + osascript. No Claude-specific tools, no MCP, no external dependencies. Works the same in Claude Code, Codex CLI, or a bare terminal.
 
 This skill works only on macOS (requires `osascript` + Apple Reminders).
+
+---
+
+## When to Use
+
+Triggers where this skill applies:
+
+- Creating one or many reminders from shell, CLI, or automation
+- Reading all open reminders across lists (morning planning, evening review)
+- Updating due dates (carry-overs, reschedules)
+- Marking reminders complete (single or batch)
+- Validating hygiene (overdue > 7 days, missing due dates, far-future creep)
+- Catching duplicates across lists
+- Diagnosing "my reminder showed up on the wrong day" bugs — almost always locale-dependent date-string parsing
+- Migrating a reminder between lists (no native move API)
+- Scheduling recurring tasks (daily stand-ups, weekly reviews)
+- Wiring Apple Reminders into Claude Code / Codex CLI / cron / shell automation
+
+**When NOT to use:**
+
+- You need iOS-specific features (sharing, geofencing, Siri integration) — those require Shortcuts, not osascript
+- You're on Linux or Windows — osascript is macOS-only
+- Your task system is something else (Linear, Jira, Todoist, Things) — find the matching skill
+- You want a rich interactive UI — use the Reminders app directly
 
 ---
 
@@ -553,6 +577,23 @@ tell application "Reminders"
     return output
 end tell'
 ```
+
+---
+
+## Common Mistakes
+
+| Mistake | What goes wrong | Fix |
+|---------|-----------------|-----|
+| Raw date strings (`"10/5/2026"`) | Locale-dependent parsing flips MM/DD on US vs EU systems; years sometimes jump silently | Use `(current date) + N * days` arithmetic only |
+| Piling reminders at 9 AM | All fire simultaneously → notification fatigue → nothing gets done | Stagger across the day (Rule #10): emails AM, deep work PM, meetings in between |
+| `repeat with r in allOpen` for property reads | 100 reminders = 100+ Apple Event round-trips; multi-second reads | Batch property access: `name of every reminder whose completed is false` |
+| `delete r` to "finish" a task | Loses history, completion timestamp, audit trail | `set completed of r to true` (Rule #8) |
+| `repeat with L in every list` | Slow (resolves shared/subscribed lists), non-deterministic | Iterate a named-list constant — see [Canonical Lists](#canonical-lists) |
+| Batch-create without pre-dedup | Silently creates duplicates — Rule #6 is enforced by the single-create helper, not by batch | Run batch-read first, filter client-side, then batch-create survivors |
+| Omitting a due date | Reminder becomes a permanent wish; never actionable | Every reminder should have a due date (Rule #3); validator flags NO-DUE-DATE |
+| Fast-path batch-read crashes with "Can't get due date" | A reminder has no due date; the fast path can't return `missing value` | Use the fallback (try-wrapped) pattern instead |
+| Calling `zeroPad(x)` directly inside `tell application` | AppleScript can't resolve handler scope from inside `tell` | Call as `my zeroPad(x)` when inside `tell application "Reminders"` |
+| Same due time on every batched carry-over | User gets N simultaneous notifications at the reschedule boundary | Stagger minute offsets (`+5`, `+10`, `+15`) when batch-updating |
 
 ---
 
