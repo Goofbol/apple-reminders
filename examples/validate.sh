@@ -1,10 +1,10 @@
 #!/bin/sh
-# validate.sh — Hygiene check across all configured lists
+# validate.sh: hygiene check across all configured lists
 #
 # Flags:
-#   FAR-FUTURE    — due date more than 30 days out
-#   OVERDUE-7D+   — overdue by more than 7 days
-#   NO-DUE-DATE   — reminder without a due date
+#   FAR-FUTURE    : due date more than 30 days out
+#   OVERDUE-7D+   : overdue by more than 7 days
+#   NO-DUE-DATE   : reminder without a due date
 #
 # Output: FLAG|ListName|TaskName
 

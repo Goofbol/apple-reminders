@@ -1,5 +1,5 @@
 #!/bin/sh
-# batch-read.sh — Read all open reminders across configured lists
+# batch-read.sh: read all open reminders across configured lists
 #
 # Output: ListName|TaskName|YYYY-MM-DDTHH:MM  (one line per reminder)
 #

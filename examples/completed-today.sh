@@ -1,5 +1,5 @@
 #!/bin/sh
-# completed-today.sh — Read reminders marked complete between midnight today and now.
+# completed-today.sh: read reminders marked complete between midnight today and now.
 # Change `set dayStart to dayStart - 1 * days` to read yesterday.
 #
 # Output: ListName|TaskName
