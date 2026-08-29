@@ -107,6 +107,16 @@ Example: `Work: Review PR 42`.
 
 ---
 
+## Due-Time Semantics
+
+Decide once what a due time means for the person you schedule for, write it down here, and apply it on every write. Measured on one operator's store (237 completions over three months): 74% of reminders were ticked after their due time, median 14 hours later, and due times clustered at the starts of their work blocks. For that operator the due time is where work starts, not where it must finish.
+
+- If due time means start of the work window: never schedule backwards from a deadline; put the deadline in the body as words; set a client-visible deadline's reminder one or two days before the deadline itself.
+- Spoken ranges ("3-4 pm", "12:30 to 1") become a due time at the start of the range with the duration in the body ("~1h").
+- Most operators do not tick as they go. They report in the next planning run and the reminders get completed then, in batch. Ask "which of these are already done?" before proposing anything; a done item still open is normal, not an error.
+- If they work from the board rather than the notification, stagger for a readable top-to-bottom plan, not for alert spacing.
+- One or two days of carry-over is routine. The same item pulled forward a third day is the signal to cut, not to restack.
+
 ## Quick Create (Single Reminder)
 
 For one-off reminders, use the helper script, it validates the list name, checks for duplicates, and uses date arithmetic:
